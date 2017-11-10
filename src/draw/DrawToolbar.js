@@ -15,7 +15,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		circle: {},
 		marker: {},
 		circlemarker: {},
-		cloud: {}
+		cloud: {},
+		arrow: {}
 	},
 
 	// @method initialize(): void
@@ -71,6 +72,11 @@ L.DrawToolbar = L.Toolbar.extend({
                 enabled: this.options.cloud,
                 handler: new L.Draw.Cloud(map, this.options.cloud),
                 title: "Cloud"
+            },
+            {
+                enabled: this.options.arrow,
+                handler: new L.Draw.Arrow(map, this.options.arrow),
+                title: "Arrow"
             }
 		];
 	},
