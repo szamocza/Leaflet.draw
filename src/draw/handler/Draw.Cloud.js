@@ -36,13 +36,6 @@ L.Cloud = L.Polygon.extend({
         return area;
     },
 
-    redraw: function () {
-        if (this._map) {
-            this._updatePath();
-        }
-        return this;
-    },
-
     _updatePath: function () {
         var rings = this._parts;
 
@@ -107,10 +100,6 @@ L.Draw.Cloud = L.Draw.Polygon.extend({
     initialize: function (map, options) {
         L.Draw.Polygon.prototype.initialize.call(this, map, options);
         this.type = L.Draw.Cloud.TYPE;
-    },
-
-    _vertexChanged: function (latlng, added) {
-        L.Draw.Polygon.prototype._vertexChanged.call(this, latlng, added);
     }
 });
 
