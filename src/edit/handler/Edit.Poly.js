@@ -190,16 +190,18 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 		var markerLeft, markerRight;
 
-		for (i = 0, j = len - 1; i < len; j = i++) {
-			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
-				continue;
-			}
+        if(!(L.Arrow && this._poly instanceof L.Arrow)) {
+            for (i = 0, j = len - 1; i < len; j = i++) {
+                if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
+                    continue;
+                }
 
-			markerLeft = this._markers[j];
-			markerRight = this._markers[i];
+                markerLeft = this._markers[j];
+                markerRight = this._markers[i];
 
-			this._createMiddleMarker(markerLeft, markerRight);
-			this._updatePrevNext(markerLeft, markerRight);
+                this._createMiddleMarker(markerLeft, markerRight);
+                this._updatePrevNext(markerLeft, markerRight);
+            }
 		}
 	},
 

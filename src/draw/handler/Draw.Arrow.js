@@ -15,29 +15,13 @@ L.Arrow = L.Polygon.extend({
     options: {
         noClip: true,
         /**
-         * Törzs vastagsága LEN%-ban
-         */
-        thickness: .1,
-        /**
          * Nyilhegy kilógó szélessége törzs vastagság %-ban
          */
         athickness: .9,
-        /**
-         * Törzs hossza LEN%-ban
-         */
-        thickness: .1,
-        length: .8,
 
         fill: true,
         fillColor: null, //same as color by default
         fillOpacity: 0.2
-    },
-
-    redraw: function () {
-        if (this._map) {
-            this._updatePath();
-        }
-        return this;
     },
 
     _updatePath: function () {
@@ -54,26 +38,21 @@ L.Arrow = L.Polygon.extend({
             var dx = p2.x - p1.x;
             var dy = p2.y - p1.y;
 
-            var th = this.options.thickness,
-                ath = this.options.athickness * th,
-                len = this.options.length,
-                l = Math.sqrt(dx * dx + dy * dy);
+            var l = Math.sqrt(dx * dx + dy * dy);
 
             if(l < 0.001) continue;
 
-            if(points.length > 2) {
-                var ix = dx / l;
-                var iy = dy / l;
+            var ix = dx / l;
+            var iy = dy / l;
 
-                p3 = points[2];
-                var d3x = p3.x - p1.x;
-                var d3y = p3.y - p1.y;
-                // Főirányba eső hossz %-ban
-                len = Math.abs(d3x * ix + d3y * iy) / l;
-                // Merőleges irány hossz %-ban
-                th = Math.abs(-d3x * iy + d3y * ix) / l;
-                ath = this.options.athickness * th;
-            }
+            p3 = points[2];
+            var d3x = p3.x - p1.x;
+            var d3y = p3.y - p1.y;
+            // Főirányba eső hossz %-ban
+            len = Math.abs(d3x * ix + d3y * iy) / l;
+            // Merőleges irány hossz %-ban
+            var th = Math.abs(-d3x * iy + d3y * ix) / l;
+            var ath = this.options.athickness * th;
 
             var relpts = [
                 len - 1.0, ath + th,
@@ -101,7 +80,15 @@ L.Arrow = L.Polygon.extend({
 
 L.Draw.Arrow = L.Draw.Polygon.extend({
     statics: {
-        TYPE: 'arrow'
+        TYPE: 'arrow',
+        /**
+         * Törzs vastagsága LEN%-ban
+         */
+        THICKNESS: .1,
+        /**
+         * Törzs hossza LEN%-ban
+         */
+        LENGTH: .8,
     },
 
     Poly: L.Arrow,
@@ -111,17 +98,26 @@ L.Draw.Arrow = L.Draw.Polygon.extend({
         this.type = L.Draw.Arrow.TYPE;
     },
 
-    _vertexChanged: function (latlng, added) {
-        L.Draw.Polygon.prototype._vertexChanged.call(this, latlng, added);
+    _addControlPoint: function () {
+        // Arrow head
+        var p1 = this._markers[0]._latlng;
+        var p2 = this._markers[1]._latlng;
+        var dLng = p2.lng - p1.lng;
+        var dLat = p2.lat - p1.lat;
+
+        var th = L.Draw.Arrow.THICKNESS;
+        var len = L.Draw.Arrow.LENGTH;
+        this.addVertex({
+            lng: p1.lng + dLng * len - dLat * th,
+            lat: p1.lat + dLat * len + dLng * th
+        });
     },
 
     _endPoint: function (clientX, clientY, e) {
-        if(this._markers.length >= 2) {
-            this.addVertex(e.latlng);
+        L.Draw.Polygon.prototype._endPoint.call(this, clientX, clientY, e);
+        if(this._markers.length == 2) {
+            this._addControlPoint();
             this._finishShape();
-            this._mouseDownOrigin = null;
-        } else {
-            L.Draw.Polygon.prototype._endPoint.call(this, clientX, clientY, e);
         }
     }
 });
