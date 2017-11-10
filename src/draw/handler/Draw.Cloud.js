@@ -22,7 +22,8 @@ L.Util.Random.prototype.nextFloat = function () {
 L.Cloud = L.Polygon.extend({
     options: {
         frillLen: 50.0,
-        frillHeight: .6
+        frillHeight: .6,
+        fillRule: 'nonzero'
     },
 
     _polygonArea: function(vertices) {
@@ -50,6 +51,7 @@ L.Cloud = L.Polygon.extend({
         frillLen = this.options.frillLen,
         frillHeight = this.options.frillHeight;
         var rand = new L.Util.Random(3);
+        var minFrillLen = 0.1;
 
         for (i = 0, rn = rings.length; i < rn; i++) {
             points = rings[i];
@@ -63,30 +65,32 @@ L.Cloud = L.Polygon.extend({
                     var dx = p.x - prevP.x;
                     var dy = p.y - prevP.y;
                     var len = Math.sqrt(dx * dx + dy * dy);
-                    if(len === 0) continue;
-
-                    // Normalized directional vector
-                    dx /= len;
-                    dy /= len;
-                    // Scaled normal vector
-                    var n = Math.floor(len / frillLen + .5);
-                    // Scaled directional vector
-                    var flen = len / (n || 1);
-                    var ix = flen * dx;
-                    var iy = flen * dy;
-                    var nx = iy * frillHeight * sign;
-                    var ny = -ix * frillHeight * sign;
-                    for(; n; n--) {
-                        var r1 = 0.5 + rand.nextFloat();
-                        var r2 = 0.5 + rand.nextFloat();;
-                        path += 'c ' + r1 * nx + ' ' + r1 * ny + ',' + (ix + r2 * nx) + ' ' + (iy + r2 * ny) + ',' + ix + ' ' + iy;
+                    if(len < minFrillLen) {
+                        path += 'l' + dx + ' ' + dy;
+                    } else {
+                        // Scaled normal vector
+                        var n = Math.max(Math.floor(len / frillLen + .5), 1);
+                        // Scaled directional vector
+                        var flen = len / n;
+                        // Normalized directional vector
+                        dx /= len;
+                        dy /= len;
+                        var ix = flen * dx;
+                        var iy = flen * dy;
+                        var nx = iy * frillHeight * sign;
+                        var ny = -ix * frillHeight * sign;
+                        for(; n; n--) {
+                            var r1 = 0.5 + rand.nextFloat();
+                            var r2 = 0.5 + rand.nextFloat();
+                            path += 'c' + r1 * nx + ' ' + r1 * ny + ',' + (ix + r2 * nx) + ' ' + (iy + r2 * ny) + ',' + ix + ' ' + iy;
+                        }
                     }
                 } else {
                     path += 'M' + p.x + ' ' + p.y;
                 }
                 prevP = p;
             }
-            path += 'z';
+            // path += 'z';
         }
 
         this._path.setAttribute('d', path || 'M0 0');
