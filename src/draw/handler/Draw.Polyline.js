@@ -342,8 +342,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var finishMarker;
 				if (this.type === L.Draw.Polyline.TYPE) {
 					finishMarker = this._markers[this._markers.length - 1];
-				} else if (this.type === L.Draw.Polygon.TYPE) {
-					finishMarker = this._markers[0];
+                } else if (this.type === L.Draw.Polygon.TYPE) {
+                    finishMarker = this._markers[0];
+                } else if (this.type === L.Draw.Cloud.TYPE) {
+                    finishMarker = this._markers[0];
 				} else {
 					return Infinity;
 				}
