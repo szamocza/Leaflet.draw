@@ -35,40 +35,44 @@ L.Arrow = L.Polygon.extend({
             // Arrow head
             var p1 = points[0];
             var p2 = points[1];
-            var dx = p2.x - p1.x;
-            var dy = p2.y - p1.y;
-
-            var l = Math.sqrt(dx * dx + dy * dy);
-
-            if(l < 0.001) continue;
-
-            var ix = dx / l;
-            var iy = dy / l;
-
-            p3 = points[2];
-            var d3x = p3.x - p1.x;
-            var d3y = p3.y - p1.y;
-            // Főirányba eső hossz %-ban
-            len = Math.abs(d3x * ix + d3y * iy) / l;
-            // Merőleges irány hossz %-ban
-            var th = Math.abs(-d3x * iy + d3y * ix) / l;
-            var ath = this.options.athickness * th;
-
-            var relpts = [
-                len - 1.0, ath + th,
-                0, -ath,
-                -len, 0,
-                0, -2 * th,
-                len, 0,
-                0, -ath
-            ];
-
+            var p3 = points[2];
             path = 'M' + p2.x + ' ' + p2.y;
 
-            for(j = 0; j < relpts.length; j += 2) {
-                x = relpts[j];
-                y = relpts[j + 1];
-                path += 'l' + (x * dx - y * dy) + ' ' + (x * dy + y * dx);
+            if(p3) {
+                var dx = p2.x - p1.x;
+                var dy = p2.y - p1.y;
+
+                var l = Math.sqrt(dx * dx + dy * dy);
+
+                if (l < 0.001) continue;
+
+                var ix = dx / l;
+                var iy = dy / l;
+
+                if (p3) {
+                    var d3x = p3.x - p1.x;
+                    var d3y = p3.y - p1.y;
+                    // Főirányba eső hossz %-ban
+                    len = Math.abs(d3x * ix + d3y * iy) / l;
+                    // Merőleges irány hossz %-ban
+                    var th = Math.abs(-d3x * iy + d3y * ix) / l;
+                    var ath = this.options.athickness * th;
+
+                    var relpts = [
+                        len - 1.0, ath + th,
+                        0, -ath,
+                        -len, 0,
+                        0, -2 * th,
+                        len, 0,
+                        0, -ath
+                    ];
+
+                    for (j = 0; j < relpts.length; j += 2) {
+                        x = relpts[j];
+                        y = relpts[j + 1];
+                        path += 'l' + (x * dx - y * dy) + ' ' + (x * dy + y * dx);
+                    }
+                }
             }
 
             path += 'z';
