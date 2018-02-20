@@ -173,6 +173,14 @@
     background-position: -300px -1px;
 }
 
+.leaflet-draw-toolbar .leaflet-draw-draw-arrow {
+    background-position: -330px -2px;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-arrow {
+    background-position: -330px -1px;
+}
+
 .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
     background-position: -62px -2px;
 }
