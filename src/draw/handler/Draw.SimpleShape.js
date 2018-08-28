@@ -106,12 +106,20 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
+	_offMouseUpListeners: function() {
+        L.DomEvent
+            .off(document, 'mouseup', this._onMouseUp, this)
+            .off(document, 'touchend', this._onMouseUp, this);
+    },
+
 	_onMouseUp: function () {
+		this._offMouseUpListeners();
+
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
 
-		this.disable();
+        this.disable();
 		if (this.options.repeatMode) {
 			this.enable();
 		}
