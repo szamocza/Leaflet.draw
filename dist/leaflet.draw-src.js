@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.12, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.12+47a98db, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.12";
+L.drawVersion = "0.4.12+47a98db";
 /**
  * @class L.Draw
  * @aka Draw
@@ -1282,12 +1282,20 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
+	_offMouseUpListeners: function() {
+        L.DomEvent
+            .off(document, 'mouseup', this._onMouseUp, this)
+            .off(document, 'touchend', this._onMouseUp, this);
+    },
+
 	_onMouseUp: function () {
+		this._offMouseUpListeners();
+
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
 
-		this.disable();
+        this.disable();
 		if (this.options.repeatMode) {
 			this.enable();
 		}
@@ -1329,31 +1337,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
-    
-	// @method disable(): void
-	disable: function () {
-		if (!this._enabled) {
-			return;
-		}
 
-		this._isCurrentlyTwoClickDrawing = false;
-		L.Draw.SimpleShape.prototype.disable.call(this);
-	},
-    
-	_onMouseUp: function (e) {
-		if (!this._shape && !this._isCurrentlyTwoClickDrawing) {
-			this._isCurrentlyTwoClickDrawing = true;
-			return;
-		}
-		
-		// Make sure closing click is on map
-		if (this._isCurrentlyTwoClickDrawing && !_hasAncestor(e.target, 'leaflet-pane')) {
-			return;
-		}
-
-		L.Draw.SimpleShape.prototype._onMouseUp.call(this);
-	},
-    
 	_drawShape: function (latlng) {
 		if (!this._shape) {
 			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
