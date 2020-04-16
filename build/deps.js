@@ -18,7 +18,8 @@ var deps = {
 			'draw/handler/Draw.CircleMarker.js',
             'draw/handler/Draw.Circle.js',
             'draw/handler/Draw.Cloud.js',
-            'draw/handler/Draw.Arrow.js',
+			'draw/handler/Draw.Arrow.js',
+			'draw/handler/Draw.Direction.js',
 		],
 		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles, circlemarkers and markers.',
 		deps: ['Core']
@@ -30,8 +31,9 @@ var deps = {
 			'edit/handler/Edit.Poly.js',
 			'edit/handler/Edit.SimpleShape.js',
 			'edit/handler/Edit.Rectangle.js',
-      'edit/handler/Edit.CircleMarker.js',
-			'edit/handler/Edit.Circle.js'
+      		'edit/handler/Edit.CircleMarker.js',
+			'edit/handler/Edit.Circle.js',
+			'edit/handler/Edit.Direction.js'
 		],
 		desc: 'Editing handlers for: polylines, polygons, rectangles, circlemarkers and circles.',
 		deps: ['Core']

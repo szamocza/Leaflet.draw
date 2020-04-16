@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.12+47a98db, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.12, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.12+47a98db";
+L.drawVersion = "0.4.12";
 /**
  * @class L.Draw
  * @aka Draw
@@ -1875,6 +1875,157 @@ L.arrow = function(latlngs, options) {
 };
 
 
+function toDir(from, to) {
+    var x = to.lng - from.lng;
+    var y = to.lat - from.lat;
+    var l = Math.sqrt(x*x + y*y);
+    if(l > 0.000001) {
+        var result = Math.asin(x / l);
+        if(y < 0) {
+            return 3.1415 - result;
+        } else {
+            return result;
+        }
+    } else {
+        return 0;
+    }
+}
+
+var piPer4 = 3.1415 / 4;
+
+function wrapDivIcon(options, direction) {
+    return L.divIcon(Object.assign({},
+        options.icon.options,
+        {
+            html: options.icon.options.html
+                + '<div class="leaflet-draw-direction" style="transform: rotate(' + (direction + piPer4) + 'rad)"><div class="arrow" style="background:' + (options.color || 'black') + '"></div></div>'
+        })
+    );
+}
+
+L.Direction = L.Marker.extend({
+    options: Object.assign({}, L.Marker.options, {
+        direction: 0,
+        icon: L.divIcon({
+            iconSize: [40,40],
+            iconAnchor: [20, 33],
+            html: '<svg viewBox="-5 -5 110 110" height="40" width="40" style="fill:none;stroke-width:10;stroke:black"><circle r="45" cy="50" cx="50"></circle><path id="triangle" d="m 50,84 7,7 H 43 Z"></path></svg>'
+        })
+    }),
+
+    initialize: function (latlng, options) {
+        L.setOptions(this, options);
+        if(this.options) {
+            if (this.options.icon) {
+                this.options.icon = wrapDivIcon(this.options);
+            }
+            this._direction = this.options.direction || 0;
+        }
+        L.Marker.prototype.initialize.call(this, latlng, this.options);
+    },
+
+    setStyle: function (style) {
+        L.setOptions(this, style);
+        if (this._renderer) {
+            this._renderer._updateStyle(this);
+        }
+        return this;
+    },
+
+    // @method getDirection: LatLng
+    // Returns the current direction of the marker.
+    getDirection: function () {
+        return this._direction;
+    },
+
+    // @method setDirection(direction: LatLng): this
+    // Changes the marker direction to the given direction.
+    setDirection: function (direction) {
+        var oldDirection = this._direction;
+        this._direction = direction;
+        this.update();
+
+        return this.fire('rotate', {oldDirection: oldDirection, direction: this._direction});
+    },
+
+    update: function () {
+        L.Marker.prototype.update.call(this);
+
+        if (this._icon) {
+            var dir = this._icon.querySelector('.leaflet-draw-direction');
+            if(dir) {
+                dir.style.transform = "rotate(" + (piPer4 + this._direction) + "rad)";
+            }
+        }
+
+        return this;
+    },
+
+    redraw: function () {
+        this.update();
+    }
+});
+
+L.Draw.Direction = L.Draw.SimpleShape.extend({
+    statics: {
+        TYPE: 'direction'
+    },
+
+    options: {
+        icon: L.divIcon({
+            className: 'leaflet-mouse-marker',
+            iconAnchor: [20, 20],
+            iconSize: [40, 40]
+        }),
+        repeatMode: false,
+        zIndexOffset: 2000 // This should be > than the highest z-index any markers
+    },
+
+    initialize: function (map, options) {
+        this.type = L.Draw.Direction.TYPE;
+        L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
+    },
+
+    _drawShape: function (latlng) {
+        var dir = toDir(this._startLatLng, latlng);
+        if (!this._shape) {
+            this._shape = new L.Direction(this._startLatLng, {direction: 0});
+            this._map.addLayer(this._shape);
+        }
+        this._shape.setDirection(dir);
+    },
+
+    _fireCreatedEvent: function () {
+        var dir = new L.Direction(this._startLatLng, {direction: this._shape.getDirection()});
+        L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, dir);
+    },
+
+    _onMouseMove: function (e) {
+        var latlng = e.latlng;
+
+        // this._tooltip.updatePosition(latlng);
+        if (this._isDrawing) {
+            this._drawShape(latlng);
+        }
+    }
+});
+
+L.direction = function(latlngs, options) {
+    return new L.Direction(latlngs, options);
+};
+
+L.Direction.addInitHook(function () {
+    if (L.Edit.Direction) {
+        this.editing = new L.Edit.Direction(this);
+
+        if (this.options.editable) {
+            this.editing.enable();
+        }
+    }
+});
+
+
+
 L.Edit = L.Edit || {};
 
 /**
@@ -2928,6 +3079,149 @@ L.Circle.addInitHook(function () {
 	});
 });
 
+
+
+L.Edit = L.Edit || {};
+
+// L.Edit.Direction = L.Edit.CircleMarker.extend({
+L.Edit.Direction = L.Edit.Marker.extend({
+	options: {
+		// moveIcon: new L.DivIcon({
+		// 	iconSize: new L.Point(8, 8),
+		// 	className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move'
+		// }),
+		resizeIcon: new L.DivIcon({
+			iconSize: new L.Point(18, 18),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize'
+		}),
+		// touchMoveIcon: new L.DivIcon({
+		// 	iconSize: new L.Point(20, 20),
+		// 	className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
+		// }),
+		// touchResizeIcon: new L.DivIcon({
+		// 	iconSize: new L.Point(20, 20),
+		// 	className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize leaflet-touch-icon'
+		// }),
+	},
+
+	initialize: function (marker, options) {
+		L.Edit.Marker.prototype.initialize.call(this, marker, options);
+	},
+
+	addHooks: function () {
+		L.Edit.Marker.prototype.addHooks.call(this);
+
+		this._createDirectionMarker();
+		// var dirMarker = this._dirMarker;
+		// dirMarker.dragging.enable();
+		// dirMarker.on('move', this._onDirMove, this);
+		this._marker.on('dragstart', this._hideDirMarker, this);
+		this._marker.on('dragend', this._showDirMarker, this);
+	},
+
+	removeHooks: function () {
+		L.Edit.Marker.prototype.removeHooks.call(this);
+
+		// dirMarker.off('move', this._onDirMove, this);
+		this._unbindDirMarker();
+	},
+
+	_hideDirMarker: function() {
+		this._dirMarker.setOpacity(0);
+	},
+
+	_showDirMarker: function() {
+		var center = this._marker.getLatLng(),
+			dirPoint = this._getDirectionMarkerPoint(center);
+		// Beállítjuk a megfelelő szöghöz
+		this._dirMarker.setLatLng(dirPoint);
+		this._dirMarker.setOpacity(1);
+	},
+
+	_createDirectionMarker: function () {
+		var center = this._marker.getLatLng(),
+			dirPoint = this._getDirectionMarkerPoint(center);
+
+		this._dirMarker = this._createMarker(dirPoint, this.options.resizeIcon);
+	},
+
+	_getDirectionMarkerPoint: function (latlng) {
+		var r = 40, dir = this._marker.getDirection();
+		return {
+			lat: latlng.lat + r * Math.cos(dir),
+			lng: latlng.lng + r * Math.sin(dir)
+		};
+	},
+
+	_onDirMove: function (e) {
+		var layer = e.target;
+		layer.edited = true;
+		this._redir(e.latlng);
+		// this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
+	},
+
+	_createMarker: function (latlng, icon) {
+		// Extending L.Marker in TouchEvents.js to include touch.
+		var marker = new L.Marker.Touch(latlng, {
+			draggable: true,
+			icon: icon,
+			zIndexOffset: 10
+		});
+
+		this._bindDirMarker(marker);
+
+		return marker;
+	},
+
+	_bindDirMarker: function (marker) {
+		this._marker._map.addLayer(marker);
+		marker
+			.on('dragstart', this._onDirMarkerDragStart, this)
+			.on('drag', this._onDirMarkerDrag, this)
+			.on('dragend', this._onDirMarkerDragEnd, this);
+		// 	.on('touchstart', this._onTouchStart, this)
+		// 	.on('touchmove', this._onTouchMove, this)
+		// 	.on('MSPointerMove', this._onTouchMove, this)
+		// 	.on('touchend', this._onTouchEnd, this)
+		// 	.on('MSPointerUp', this._onTouchEnd, this);
+	},
+
+	_unbindDirMarker: function () {
+		this._dirMarker
+			.off('dragstart', this._onDirMarkerDragStart, this)
+			.off('drag', this._onDirMarkerDrag, this)
+			.off('dragend', this._onDirMarkerDragEnd, this);
+		// 	.off('touchstart', this._onTouchStart, this)
+		// 	.off('touchmove', this._onTouchMove, this)
+		// 	.off('MSPointerMove', this._onTouchMove, this)
+		// 	.off('touchend', this._onTouchEnd, this)
+		// 	.off('MSPointerUp', this._onTouchEnd, this);
+		this._dirMarker.remove();
+		this._dirMarker = null;
+	},
+
+	_onDirMarkerDragStart: function(e) {
+		this._dirMarker.setOpacity(0);
+		this._marker.fire('editstart');
+	},
+
+	_onDirMarkerDrag: function(e) {
+		var marker = e.target,
+			latlng = marker.getLatLng();
+
+		this._marker.setDirection(toDir(this._marker.getLatLng(), latlng));
+		// this._map.fire(L.Draw.Event.EDITRESIZE, { layer: this._marker });
+
+		//
+		// this._marker.redraw();
+		// this._marker.fire('editdrag');
+	},
+
+	_onDirMarkerDragEnd: function(e) {
+		this._dirMarker.setOpacity(1);
+		this._marker.fire('editend');
+	},
+});
 
 
 L.Map.mergeOptions({
@@ -4154,7 +4448,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		marker: {},
 		circlemarker: {},
 		cloud: {},
-		arrow: {}
+		arrow: {},
+		direction: {}
 	},
 
 	// @method initialize(): void
@@ -4215,7 +4510,13 @@ L.DrawToolbar = L.Toolbar.extend({
                 enabled: this.options.arrow,
                 handler: new L.Draw.Arrow(map, this.options.arrow),
                 title: "Arrow"
-            }
+            },
+			{
+				enabled: this.options.direction,
+				handler: new L.Draw.Direction(map, this.options.direction),
+				title: "Direction"
+			}
+
 		];
 	},
 

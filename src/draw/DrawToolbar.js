@@ -16,7 +16,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		marker: {},
 		circlemarker: {},
 		cloud: {},
-		arrow: {}
+		arrow: {},
+		direction: {}
 	},
 
 	// @method initialize(): void
@@ -77,7 +78,13 @@ L.DrawToolbar = L.Toolbar.extend({
                 enabled: this.options.arrow,
                 handler: new L.Draw.Arrow(map, this.options.arrow),
                 title: "Arrow"
-            }
+            },
+			{
+				enabled: this.options.direction,
+				handler: new L.Draw.Direction(map, this.options.direction),
+				title: "Direction"
+			}
+
 		];
 	},
 
