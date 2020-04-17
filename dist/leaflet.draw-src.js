@@ -4472,6 +4472,16 @@ L.DrawToolbar = L.Toolbar.extend({
 	getModeHandlers: function (map) {
 		return [
 			{
+				enabled: this.options.marker,
+				handler: new L.Draw.Marker(map, this.options.marker),
+				title: L.drawLocal.draw.toolbar.buttons.marker
+			},
+			{
+				enabled: this.options.direction,
+				handler: new L.Draw.Direction(map, this.options.direction),
+				title: "Direction"
+			},
+			{
 				enabled: this.options.polyline,
 				handler: new L.Draw.Polyline(map, this.options.polyline),
 				title: L.drawLocal.draw.toolbar.buttons.polyline
@@ -4491,11 +4501,6 @@ L.DrawToolbar = L.Toolbar.extend({
 				handler: new L.Draw.Circle(map, this.options.circle),
 				title: L.drawLocal.draw.toolbar.buttons.circle
 			},
-			{
-				enabled: this.options.marker,
-				handler: new L.Draw.Marker(map, this.options.marker),
-				title: L.drawLocal.draw.toolbar.buttons.marker
-			},
             {
                 enabled: this.options.circlemarker,
                 handler: new L.Draw.CircleMarker(map, this.options.circlemarker),
@@ -4510,13 +4515,7 @@ L.DrawToolbar = L.Toolbar.extend({
                 enabled: this.options.arrow,
                 handler: new L.Draw.Arrow(map, this.options.arrow),
                 title: "Arrow"
-            },
-			{
-				enabled: this.options.direction,
-				handler: new L.Draw.Direction(map, this.options.direction),
-				title: "Direction"
-			}
-
+            }
 		];
 	},
 

@@ -213,6 +213,13 @@
     background-position: -271px -1px;
 }
 
+.leaflet-draw-toolbar .leaflet-draw-draw-direction {
+    background-position: -361px 0px;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-direction {
+    background-position: -361px 0px;
+}
 
 /* ================================================================== */
 /* Edit toolbar

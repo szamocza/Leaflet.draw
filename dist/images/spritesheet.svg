@@ -13,7 +13,7 @@
    width="1280"
    id="svg4225"
    version="1.1"
-   inkscape:version="0.92.1 r15371"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="spritesheet.svg"
    inkscape:export-filename="/home/szamocza/Devel/libs/Leaflet.draw/src/images/spritesheet.png"
    inkscape:export-xdpi="45"
@@ -41,15 +41,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
+     inkscape:window-width="2560"
+     inkscape:window-height="1385"
      id="namedview4254"
      showgrid="false"
-     inkscape:zoom="2.6203703"
-     inkscape:cx="683.45064"
-     inkscape:cy="41.814068"
+     inkscape:zoom="0.92644081"
+     inkscape:cx="438.67363"
+     inkscape:cy="122.57464"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg4225"
      showguides="true"
@@ -104,6 +104,18 @@
        inkscape:locked="false"
        inkscape:label=""
        inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="780,84.792405"
+       orientation="1,0"
+       id="guide3737"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="276.20142,41.143994"
+       orientation="0,1"
+       id="guide3754"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <g
      style="fill:#464646;fill-opacity:1"
@@ -209,9 +221,20 @@
      id="rectangle-3"
      sodipodi:nodetypes="ccccccc" />
   <path
-     d="m 699.61051,21.13175 0.1081,8.541569 -2.50969,-2.446426 -13.76548,13.628056 -3.48668,-3.613168 13.70643,-13.813614 -2.30754,-2.434019 z"
+     d="m 703.36051,17.918411 0.1081,16.041569 -4.38469,-4.321426 -13.76548,13.628056 -7.23668,-7.363168 13.70643,-13.813614 -4.18254,-4.309019 z"
      id="path4233-5"
      inkscape:connector-curvature="0"
      style="fill:#464646;fill-opacity:1"
      sodipodi:nodetypes="cccccccc" />
+  <path
+     style="fill:#464646;fill-opacity:1;stroke-width:1"
+     inkscape:connector-curvature="0"
+     d="m 750.60956,18.804769 c -4.971,0 -9,4.029 -9,9 0,4.971 5.001,12.000001 9,14.000001 4.001,-2 9,-9.029001 9,-14.000001 0,-4.971 -4.029,-9 -9,-9 z m 0,12.500001 c -2.484,0 -4.5,-2.014001 -4.5,-4.500001 0,-2.484 2.016,-4.5 4.5,-4.5 2.485,0 4.5,2.016 4.5,4.5 0,2.486 -2.015,4.500001 -4.5,4.500001 z"
+     id="marker-3" />
+  <path
+     d="m 769.22624,16.043174 -8.12533,11.606813 1.07927,-6.983608 -6.76632,-1.733908 z"
+     id="path4233-5-6"
+     inkscape:connector-curvature="0"
+     style="fill:#464646;fill-opacity:1;stroke-width:1"
+     sodipodi:nodetypes="ccccc" />
 </svg>
