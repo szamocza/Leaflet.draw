@@ -153,6 +153,11 @@ L.drawLocal = {
 				tooltip: {
 					end: 'Release mouse to finish drawing.'
 				}
+			},
+			direction: {
+				tooltip: {
+					start: 'Click and drag to place marker and set direction.'
+				}
 			}
 		}
 	},
@@ -1983,6 +1988,7 @@ L.Draw.Direction = L.Draw.SimpleShape.extend({
 
     initialize: function (map, options) {
         this.type = L.Draw.Direction.TYPE;
+        this._initialLabelText = L.drawLocal.draw.handlers.direction.tooltip.start;
         L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
     },
 
@@ -2003,7 +2009,7 @@ L.Draw.Direction = L.Draw.SimpleShape.extend({
     _onMouseMove: function (e) {
         var latlng = e.latlng;
 
-        // this._tooltip.updatePosition(latlng);
+        this._tooltip.updatePosition(latlng);
         if (this._isDrawing) {
             this._drawShape(latlng);
         }

@@ -146,6 +146,11 @@ L.drawLocal = {
 				tooltip: {
 					end: 'Release mouse to finish drawing.'
 				}
+			},
+			direction: {
+				tooltip: {
+					start: 'Click and drag to place marker and set direction.'
+				}
 			}
 		}
 	},
