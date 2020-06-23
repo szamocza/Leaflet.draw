@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+node_modules/jake/bin/cli.js build[,,true] && cp src/images/* dist/images/ && cp -r dist ../../srcs/PlanDocSite/client/node_modules/leaflet-draw/ && cp dist/leaflet.draw-src.js ../../srcs/PlanDocSite/client/node_modules/leaflet-draw/dist/leaflet.draw.js
