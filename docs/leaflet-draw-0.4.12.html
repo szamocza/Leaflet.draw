@@ -397,6 +397,16 @@ Triggered when the user starts remove mode by clicking the remove tool button.</
 		<td>The type of edit this is. One of: <code>remove</code>
 Triggered when the user has finished removing shapes (remove mode) and saves.</td>
 	</tr>
+	<tr id='l-draw-event-draw:toolbaropened'>
+		<td><code><b>draw:toolbaropened</b>
+		<td><code>String</code></td>
+		<td>Triggered when a toolbar is opened.</td>
+	</tr>
+	<tr id='l-draw-event-draw:toolbarclosed'>
+		<td><code><b>draw:toolbarclosed</b>
+		<td><code>String</code></td>
+		<td>Triggered when a toolbar is closed.</td>
+	</tr>
 </tbody></table>
 
 </section>
@@ -1565,6 +1575,12 @@ The value will be rounded as defined by the precision option object.</p>
 The value will be rounded as defined by the precision option object.</p>
 </td>
 	</tr>
+	<tr id='l-geometryutil-isversion07x'>
+		<td><code><b>isVersion07x</b>()</nobr></code></td>
+		<td><code>boolean</code></td>
+		<td><p>Returns true if the Leaflet version is 0.7.x, false otherwise.</p>
+</td>
+	</tr>
 </tbody></table>
 
 </section>
@@ -2096,6 +2112,12 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 <td><a href="#markeroptions">MarkerOptions</a></td>
 <td><code>{ }</code></td>
 <td>Marker draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>circlemarker</td>
+<td><a href="#circlemarkeroptions">CircleMarkerOptions</a></td>
+<td><code>{ }</code></td>
+<td>Circle marker draw handler options. Set to <code>false</code> to disable handler.</td>
 </tr>
 </tbody>
 </table>

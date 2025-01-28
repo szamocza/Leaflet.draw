@@ -154,3 +154,24 @@ L.Draw.Event.DELETESTART = 'draw:deletestart';
  * Triggered when the user has finished removing shapes (remove mode) and saves.
  */
 L.Draw.Event.DELETESTOP = 'draw:deletestop';
+
+/**
+ * @event draw:toolbaropened: String
+ *
+ * Triggered when a toolbar is opened.
+ */
+L.Draw.Event.TOOLBAROPENED = 'draw:toolbaropened';
+
+/**
+ * @event draw:toolbarclosed: String
+ *
+ * Triggered when a toolbar is closed.
+ */
+L.Draw.Event.TOOLBARCLOSED = 'draw:toolbarclosed';
+
+/**
+ * @event draw:markercontext: String
+ *
+ * Triggered when a marker is right clicked.
+ */
+L.Draw.Event.MARKERCONTEXT = 'draw:markercontext';
